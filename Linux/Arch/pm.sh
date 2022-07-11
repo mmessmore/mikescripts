@@ -47,7 +47,19 @@ pm_autoremove() {
 }
 
 pm_install() {
-    sudo "$TOOL" -S "$@"
+    echo "${prog}: Using ${TOOL}"
+    case "$TOOL" in
+        pacman)
+            sudo pacman -S "$@"
+            ;;
+        yay)
+            yay -S "$@"
+            ;;
+        *)
+            echo "${prog}: Uknown tool ${TOOL}"
+            echo "How did you get here?"
+            ;;
+    esac
 }
 
 pm_list() {
@@ -59,15 +71,32 @@ pm_remove() {
 }
 
 pm_search() {
-    sudo pacman -Ss "$@"
+    echo "${prog}: Using ${TOOL}"
+    "$TOOL" -Ss "$@"
 }
 
 pm_upgrade() {
-    if [ -n "$1" ]; then
-        sudo "$TOOL" -Su "$@"
-    else
-        sudo "$TOOL" -Syu
-    fi
+    echo "${prog}: Using ${TOOL}"
+    case "$TOOL" in
+        pacman)
+            if [ -n "$1" ]; then
+                sudo "$TOOL" -Su "$@"
+            else
+                sudo "$TOOL" -Syu
+            fi
+            ;;
+        yay)
+            if [ -n "$1" ]; then
+                "$TOOL" -Su "$@"
+            else
+                "$TOOL" -Syu
+            fi
+            ;;
+        *)
+            echo "${prog}: Uknown tool ${TOOL}"
+            echo "How did you get here?"
+            ;;
+    esac
 }
 
 COMMAND="$1"
@@ -101,7 +130,6 @@ if [ -z "$COMMAND" ]; then
     exit 22
 fi
 
-echo "Using ${TOOL}"
 
 case "$COMMAND" in
     -h)
@@ -134,5 +162,3 @@ case "$COMMAND" in
         usage
         exit 22
 esac
-
-
