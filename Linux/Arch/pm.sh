@@ -12,7 +12,7 @@ $prog usage
 
 GLOBAL OPTIONS
     -h          This help message
-	-y			Use yay instead of pacman
+    -y          Use yay instead of pacman
 
 COMMANDS
 
@@ -43,7 +43,11 @@ pm_autoremove() {
         echo "${prog}: Nothing to clean up"
         exit 0
     fi
-    sudo pacman -Qdtq | xargs sudo pacman -Rcns
+    to_remove=$(pacman -Qdtq)
+
+    # we're not quoting on purpose
+    # shellcheck disable=SC2086
+    sudo pacman -Rcns $to_remove
 }
 
 pm_install() {
@@ -99,8 +103,6 @@ pm_upgrade() {
     esac
 }
 
-COMMAND="$1"
-shift
 
 TOOL=pacman
 
@@ -121,15 +123,17 @@ while getopts hy OPT; do
 	esac
 done
 
-export TOOL
+shift $(( OPTIND - 1 ))
 
+COMMAND="$1"
+
+export TOOL
 
 if [ -z "$COMMAND" ]; then
     echo "No command specified" >&2
     usage
     exit 22
 fi
-
 
 case "$COMMAND" in
     -h)
