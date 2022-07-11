@@ -27,6 +27,9 @@ COMMANDS
     upgrade     Upgrade specific packages when supplied, otherwise upgrade the
                 universe.
                 alias for \`pacman -Su PACKAGEs' or \`pacman -Syu'
+    list        List installed packages (pass \`-e' for explicitly installed
+                only)
+                alias for \`pacman -Q'
 
 NOTES
     You probably want to run as root, or have a NOPASSWD rule to run pacman
@@ -44,6 +47,10 @@ pm_autoremove() {
 
 pm_install() {
     sudo pacman -S "$@"
+}
+
+pm_list() {
+    pacman -Q "$@"
 }
 
 pm_remove() {
@@ -81,6 +88,9 @@ case "$COMMAND" in
         ;;
     install)
         pm_install "$@"
+        ;;
+    list)
+        pm_list "$@"
         ;;
     remove)
         pm_remove "$@"
