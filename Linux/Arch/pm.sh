@@ -7,11 +7,12 @@ usage() {
 
 $prog usage
 
-    $prog COMMAND [ARGUMENTS]
+    $prog COMMAND [-y] [ARGUMENTS]
     $prog -h
 
 GLOBAL OPTIONS
     -h          This help message
+	-y			Use yay instead of pacman
 
 COMMANDS
 
@@ -46,7 +47,7 @@ pm_autoremove() {
 }
 
 pm_install() {
-    sudo pacman -S "$@"
+    sudo "$TOOL" -S "$@"
 }
 
 pm_list() {
@@ -63,20 +64,44 @@ pm_search() {
 
 pm_upgrade() {
     if [ -n "$1" ]; then
-        sudo pacman -Su "$@"
+        sudo "$TOOL" -Su "$@"
     else
-        sudo pacman -Syu
+        sudo "$TOOL" -Syu
     fi
 }
 
 COMMAND="$1"
 shift
 
+TOOL=pacman
+
+while getopts hy OPT; do
+	case "$OPT" in
+		h)
+			usage
+			exit 0
+			;;
+		y)
+			TOOL=yay
+			;;
+		*)
+			echo "Unknown option ${OPT}"
+			usage
+			exit 22
+			;;
+	esac
+done
+
+export TOOL
+
+
 if [ -z "$COMMAND" ]; then
     echo "No command specified" >&2
     usage
     exit 22
 fi
+
+echo "Using ${TOOL}"
 
 case "$COMMAND" in
     -h)
