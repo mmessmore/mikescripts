@@ -10,14 +10,18 @@ install: $(OS) install-sh
 .PHONY: $(OS)
 $(OS): $(BINDIR)
 	@echo "** Installing $(OS)-specific scripts"
-	$(MAKE) -C $(OS)
+	@if [ -d "$(OS)" ]; then \
+		$(MAKE) -C $(OS); \
+	else \
+		true;\
+	fi;
 
 .PHONY: install-sh
 install-sh: $(BINDIR)
 	@echo "** Installing universal scripts"
-	for f in *.sh; do \
+	@-for f in *.sh; do \
 		install -m 755 $$f $(BINDIR)/$${f%.sh}; \
 	done
 
 $(BINDIR):
-	mkdir -p "$$BINDIR"
+	@mkdir -p "$(BINDIR)"
