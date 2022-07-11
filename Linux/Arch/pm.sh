@@ -26,7 +26,7 @@ COMMANDS
     uninstall   Same as remove, because I forget which command uses which
     upgrade     Upgrade specific packages when supplied, otherwise upgrade the
                 universe.
-                alias for \`pacman -Su PACKAGEs' or \`pacman -Syu\'
+                alias for \`pacman -Su PACKAGEs' or \`pacman -Syu'
 
 NOTES
     You probably want to run as root, or have a NOPASSWD rule to run pacman
