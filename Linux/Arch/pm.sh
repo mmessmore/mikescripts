@@ -43,7 +43,7 @@ pm_autoremove() {
 }
 
 pm_install() {
-    sudo pacman -Ss "$@"
+    sudo pacman -S "$@"
 }
 
 pm_remove() {

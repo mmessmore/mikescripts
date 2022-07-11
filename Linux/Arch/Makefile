@@ -10,4 +10,4 @@ $(BINDIR):
 
 
 $(BINDIR)/%: %.sh
-	echo install -m 0755 $< $@
+	install -m 0755 $< $@
