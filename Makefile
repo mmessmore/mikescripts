@@ -22,7 +22,7 @@ $(OS): $(BINDIR)
 install-sh: $(BINDIR) $(SHELL_SCRIPTS)
 
 $(BINDIR)/%: %.sh
-	echo install -m 0755 $< $@
+	install -m 0755 $< $@
 
 $(BINDIR):
 	@mkdir -p "$(BINDIR)"

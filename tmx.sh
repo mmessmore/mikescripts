@@ -24,11 +24,8 @@ if [ "$1" = "ls" ]; then
 fi
 
 base_session="$1"
-if [ -n "$1" ]; then
-    base_session="$DEFAULT_SESSION"
-else
-    base_session="$1"
-fi
+[ -z "$base_session" ] && base_session="$DEFAULT_SESSION"
+
 
 # This actually works without the trim() on all systems except OSX
 tmux_nb="$(trim "$(tmux ls | grep -c "^$base_session")")"
