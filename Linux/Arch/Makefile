@@ -1,13 +1,13 @@
 BINDIR = $(HOME)/bin
+SHELL_SCRIPTS != ls *.sh | sed 's!^!$(BINDIR)/!;s!\.sh$$!!'
 
 install: install-sh
+
+install-sh: $(BINDIR) $(SHELL_SCRIPTS)
 
 $(BINDIR):
 	@mkdir -p "$(BINDIR)"
 
 
-.PHONY: install-sh
-install-sh: $(BINDIR)
-	@- for f in *.sh; do \
-		install -m 755 $$f $(BINDIR)/$${f%.sh}; \
-	done
+$(BINDIR)/%: %.sh
+	echo install -m 0755 $< $@

@@ -1,17 +1,17 @@
 BINDIR = $(HOME)/bin
 DISTRO != scripts/distro.sh
+#SHELL_SCRIPTS != ls *.sh | sed 's!^!$(BINDIR)/!;s!\.sh$$!!'
 
-install: $(DISTRO) install-sh
+install: $(DISTRO)
 
 $(BINDIR):
 	@mkdir -p "$(BINDIR)"
 
 
-.PHONY: install-sh
-install-sh: $(BINDIR)
-	@-for f in *.sh; do \
-		install -m 755 $$f $(BINDIR)/$${f%.sh}; \
-	done
+# install-sh: $(BINDIR) $(SHELL_SCRIPTS)
+
+$(BINDIR)/%: %.sh
+	echo install -m 0755 $< $@
 
 .PHONY: $(DISTRO)
 $(DISTRO): $(BINDIR)
@@ -21,3 +21,4 @@ $(DISTRO): $(BINDIR)
 	else \
 		true;\
 	fi;
+	@echo "** Done with $(DISTRO)"

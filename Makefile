@@ -5,6 +5,8 @@ BINDIR := $(HOME)/bin
 # This works on BSD make and GNU make v4+
 OS != uname -s
 
+SHELL_SCRIPTS != ls *.sh | sed 's!^!$(BINDIR)/!;s!\.sh$$!!'
+
 install: $(OS) install-sh
 
 .PHONY: $(OS)
@@ -15,13 +17,12 @@ $(OS): $(BINDIR)
 	else \
 		true;\
 	fi;
+	@echo "** Done with $(OS)"
 
-.PHONY: install-sh
-install-sh: $(BINDIR)
-	@echo "** Installing universal scripts"
-	@-for f in *.sh; do \
-		install -m 755 $$f $(BINDIR)/$${f%.sh}; \
-	done
+install-sh: $(BINDIR) $(SHELL_SCRIPTS)
+
+$(BINDIR)/%: %.sh
+	echo install -m 0755 $< $@
 
 $(BINDIR):
 	@mkdir -p "$(BINDIR)"
