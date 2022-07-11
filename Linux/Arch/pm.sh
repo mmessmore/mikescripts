@@ -126,6 +126,7 @@ done
 shift $(( OPTIND - 1 ))
 
 COMMAND="$1"
+shift
 
 export TOOL
 
