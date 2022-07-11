@@ -16,7 +16,15 @@ ${prog} USAGE
     ${prog} CMD [ARGS]
     ${prog} -h
 
-This runs the poudriere command with the options for our default setup
+    This is just a friendly front-end to poudriere so I don't have to remember
+    a ton of options.
+
+    2 special commands exist:
+        \`update' updates the ports tree
+        \`update-release' updates the version of FreeBSD in the jail
+
+    Otherwise it just runs \`poudriere' CMD with the options for the command
+    set based on the config at the top of this script.
 
 ARGUMENTS
     CMD     poudriere subcommand (see poudriere(8))
@@ -28,7 +36,14 @@ OPTIONS
 EXAMPLES
 
     $ ${prog} bulk
+    $ ${prog} update
     $ ${prog} options text/vim
+
+ISSUES
+    It probably doesn't handle all the cases, but just the ones I use.
+    (\`jail', \`options', and \`bulk').
+
+    I should externalize the config vs. having it buried in this script.
 EOM
 }
 
@@ -58,21 +73,32 @@ cd /usr/local/etc/poudriere.d/ || exit $?
 # let's print commands from here out
 set -x
 
-# if a port is specified in the args don't use the pkglist
-for arg in "$@"; do
-    if [[ "$arg" =~ [[:alnum:]]+/[[:alnum:]] ]]; then
+case "$CMD" in
+    update)
+        exec poudriere ports \
+            -u \
+            -p "$TREE"
+        ;;
+    update-release)
+        exec poudriere jail \
+            -j "$JAIL" \
+            -u \
+            -J 6 \
+            "$@"
+        ;;
+
+    jail)
+        exec poudriere "$CMD" \
+            -j "$JAIL" \
+            "$@"
+        ;;
+    *)
+        # otherwise use the pkglist
         exec poudriere "$CMD" \
             -j "$JAIL" \
             -p "$TREE" \
             -z "$SET" \
+            -f "$PKG_LIST" \
             "$@"
-    fi
-done
-
-# otherwise use the pkglist
-exec poudriere "$CMD" \
-    -j "$JAIL" \
-    -p "$TREE" \
-    -z "$SET" \
-    -f "$PKG_LIST" \
-    "$@"
+        ;;
+esac

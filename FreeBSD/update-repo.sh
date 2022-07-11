@@ -17,8 +17,11 @@ ${prog} USAGE
     ${prog} [-Nv] [-n MINS] [-P FILE]
     ${prog} -h
 
-    This updates the ports tree makes sure options are set and bulk builds
-    changed ports
+    This rebuilds necessary packages for the repo.  pkglist is the union of the
+    existing config and any explicily installed pkgs on the system.
+
+    It also updates both the \`normal' ports tree (/usr/ports) and the tree
+    used by \`poudriere' based on the age of the \`normal' ports tree.
 
 ${prog} OPTIONS
 
@@ -99,6 +102,7 @@ if find /usr/ports/.portsnap.INDEX -mmin "+${MINS}" |
     echo "${prog}: portsnap older than ${MINS} mins.  Updating"
     portsnap fetch
     portsnap update
+    powder update
     powder options
 fi
 
